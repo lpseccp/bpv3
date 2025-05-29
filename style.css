@@ -1,11 +1,8 @@
-* {
-  box-sizing: border-box;
-}
-
 body {
   font-family: Arial, sans-serif;
-  margin: 0;
   background-color: #f4f4f4;
+  margin: 0;
+  padding: 0;
 }
 
 header {
@@ -15,15 +12,10 @@ header {
   text-align: center;
 }
 
-nav {
-  margin-top: 0.5rem;
-}
-
 nav a {
   color: white;
   margin: 0 15px;
   text-decoration: none;
-  font-weight: bold;
 }
 
 nav a:hover {
@@ -31,7 +23,7 @@ nav a:hover {
 }
 
 main {
-  padding: 20px;
+  padding: 1rem;
 }
 
 h1, h2 {
@@ -52,34 +44,33 @@ th, td {
 }
 
 input, select {
-  padding: 0.4rem;
-  margin: 0.3rem;
+  padding: 5px;
+  margin: 5px;
 }
 
 button {
-  background-color: #0077cc;
+  padding: 6px 12px;
+  background-color: #003366;
   color: white;
   border: none;
-  padding: 0.5rem 1rem;
+  border-radius: 4px;
   cursor: pointer;
-  border-radius: 5px;
 }
 
 button:hover {
-  background-color: #005fa3;
+  background-color: #005599;
 }
 
 canvas {
-  background: white;
-  margin-top: 20px;
-  display: block;
+  background-color: white;
+  margin-top: 1rem;
   max-width: 100%;
 }
 
-.container {
+.card {
   background-color: white;
-  padding: 20px;
+  padding: 1rem;
+  margin: 1rem 0;
   border-radius: 8px;
-  box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
-  margin-bottom: 20px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
