@@ -1,0 +1,14 @@
+
+{
+    "name": "Análise Financeira Avançada",
+    "short_name": "FinanceApp",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "description": "App PWA para análise de balanço patrimonial, DRE, liquidez e estrutura de capitais.",
+    "icons": [{
+        "src": "icon.png",
+        "sizes": "192x192",
+        "type": "image/png"
+    }]
+}
