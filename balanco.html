@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Balanço Patrimonial</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <header>
+    <h1>Balanço Patrimonial</h1>
+    <nav>
+      <a href="index.html">Início</a>
+      <a href="dre.html">DRE</a>
+      <a href="liquidez.html">Liquidez</a>
+      <a href="estrutura.html">Estrutura</a>
+    </nav>
+  </header>
+  <main>
+    <h2>Adicionar Conta</h2>
+    <div>
+      <input id="nome" placeholder="Nome da Conta">
+      <select id="tipo">
+        <option value="">Selecione Tipo</option>
+        <option value="Ativo">Ativo</option>
+        <option value="Passivo">Passivo</option>
+      </select>
+      <input id="subgrupo" placeholder="Subgrupo (Ex: Circulante)">
+      <input id="valorAtual" type="number" placeholder="Valor Atual (R$)">
+      <input id="valorIdeal" type="number" placeholder="Valor Ideal (R$)">
+      <input id="importancia" type="number" min="1" max="5" placeholder="Nota de Importância (1-5)">
+      <button onclick="adicionarConta()">Adicionar Conta</button>
+    </div>
+
+    <h2>Resumo do Balanço</h2>
+    <div id="tabela-balanco"></div>
+
+    <div class="card">
+      <h3>Gráfico de Distribuição por Tipo</h3>
+      <canvas id="graficoPizza"></canvas>
+    </div>
+
+    <div class="card">
+      <h3>Gráfico de Atual x Ideal</h3>
+      <canvas id="graficoBarras"></canvas>
+    </div>
+
+    <div class="card">
+      <h3>Gráfico de Importância</h3>
+      <canvas id="graficoImportancia"></canvas>
+    </div>
+  </main>
+</body>
+</html>
