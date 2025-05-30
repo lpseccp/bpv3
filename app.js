@@ -1,183 +1,180 @@
-// Dados no localStorage
 let contas = JSON.parse(localStorage.getItem('contas')) || [];
 
-// Função para salvar
-function salvar() {
+function salvarContas() {
     localStorage.setItem('contas', JSON.stringify(contas));
-    desenharTabela();
-    desenharGraficos();
 }
 
-// Adicionar Conta
 function adicionarConta() {
-    const nome = document.getElementById('nome').value;
-    const tipo = document.getElementById('tipo').value;
-    const subgrupo = document.getElementById('subgrupo').value;
-    const valorAtual = parseFloat(document.getElementById('valorAtual').value);
-    const valorIdeal = parseFloat(document.getElementById('valorIdeal').value);
-    const importancia = parseInt(document.getElementById('importancia').value);
+    const nome = document.getElementById('nomeConta').value.trim();
+    const tipo = document.getElementById('tipoConta').value;
+    const subgrupo = document.getElementById('subgrupoConta').value.trim();
+    const valorAtual = parseFloat(document.getElementById('valorAtualConta').value);
+    const valorIdeal = parseFloat(document.getElementById('valorIdealConta').value);
+    const importancia = parseInt(document.getElementById('importanciaConta').value);
 
-    if (!nome || !tipo || isNaN(valorAtual) || isNaN(valorIdeal)) {
-        alert('Preencha todos os campos corretamente!');
+    if (!nome || isNaN(valorAtual) || isNaN(valorIdeal) || isNaN(importancia)) {
+        alert('Preencha todos os campos corretamente.');
         return;
     }
 
     contas.push({ nome, tipo, subgrupo, valorAtual, valorIdeal, importancia });
-    salvar();
-
-    // Limpar inputs
-    document.getElementById('nome').value = '';
-    document.getElementById('tipo').value = '';
-    document.getElementById('subgrupo').value = '';
-    document.getElementById('valorAtual').value = '';
-    document.getElementById('valorIdeal').value = '';
-    document.getElementById('importancia').value = '';
+    salvarContas();
+    limparCampos();
+    atualizarTabela();
+    atualizarGraficos();
 }
 
-// Remover conta
-function removerConta(index) {
-    if (confirm('Deseja remover essa conta?')) {
-        contas.splice(index, 1);
-        salvar();
-    }
+function limparCampos() {
+    document.getElementById('nomeConta').value = '';
+    document.getElementById('subgrupoConta').value = '';
+    document.getElementById('valorAtualConta').value = '';
+    document.getElementById('valorIdealConta').value = '';
+    document.getElementById('importanciaConta').value = '';
 }
 
-// Tabela
-function desenharTabela() {
-    const tabela = document.getElementById('tabela-balanco');
-    if (!tabela) return;
+function excluirConta(index) {
+    contas.splice(index, 1);
+    salvarContas();
+    atualizarTabela();
+    atualizarGraficos();
+}
 
-    let html = `
-    <table>
-      <tr>
-        <th>Conta</th><th>Tipo</th><th>Subgrupo</th><th>Atual (R$)</th><th>Ideal (R$)</th>
-        <th>Diferença</th><th>%</th><th>Importância</th><th>Recomendação</th><th>Ação</th>
-      </tr>`;
+function atualizarTabela() {
+    const tbody = document.querySelector('#tabelaContas tbody');
+    tbody.innerHTML = '';
 
     let totalAtivo = 0;
     let totalPassivo = 0;
 
-    contas.forEach((c, i) => {
-        if (c.tipo === 'Ativo') totalAtivo += c.valorAtual;
-        if (c.tipo === 'Passivo') totalPassivo += c.valorAtual;
+    contas.forEach((conta, index) => {
+        if (conta.tipo === 'Ativo') totalAtivo += conta.valorAtual;
+        if (conta.tipo === 'Passivo') totalPassivo += conta.valorAtual;
 
-        const diferenca = c.valorIdeal - c.valorAtual;
-        const percentual = ((c.valorAtual / (c.valorIdeal || 1)) * 100).toFixed(1);
-        const recomendacao = diferenca > 0 ? 'Comprar/Adicionar' : 'OK';
+        const diferenca = conta.valorIdeal - conta.valorAtual;
+        const percentual = conta.valorIdeal > 0 ? ((conta.valorAtual / conta.valorIdeal) * 100).toFixed(1) : '0';
 
-        html += `
-        <tr>
-          <td>${c.nome}</td>
-          <td>${c.tipo}</td>
-          <td>${c.subgrupo}</td>
-          <td>${c.valorAtual.toFixed(2)}</td>
-          <td>${c.valorIdeal.toFixed(2)}</td>
-          <td>${diferenca.toFixed(2)}</td>
-          <td>${percentual}%</td>
-          <td>${c.importancia || ''}</td>
-          <td>${recomendacao}</td>
-          <td><button onclick="removerConta(${i})">Excluir</button></td>
-        </tr>`;
+        const recomendacao = diferenca > 0 ? 'Comprar' : 'Aguardar';
+
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${conta.nome}</td>
+            <td>${conta.tipo}</td>
+            <td>${conta.subgrupo}</td>
+            <td>R$ ${conta.valorAtual.toFixed(2)}</td>
+            <td>R$ ${conta.valorIdeal.toFixed(2)}</td>
+            <td>R$ ${diferenca.toFixed(2)}</td>
+            <td>${percentual}%</td>
+            <td>${conta.importancia}</td>
+            <td>${recomendacao}</td>
+            <td><button onclick="excluirConta(${index})">Excluir</button></td>
+        `;
+        tbody.appendChild(tr);
     });
 
-    const saldo = totalAtivo - totalPassivo;
-    const totalPL = saldo;
-
-    html += `</table>
-      <p><strong>Total Ativo:</strong> R$ ${totalAtivo.toFixed(2)}</p>
-      <p><strong>Total Passivo:</strong> R$ ${totalPassivo.toFixed(2)}</p>
-      <p><strong>Total PL (Patrimônio Líquido):</strong> R$ ${totalPL.toFixed(2)}</p>
-      <p><strong>Saldo (Ativo - Passivo):</strong> R$ ${saldo.toFixed(2)}</p>
-    `;
-
-    tabela.innerHTML = html;
+    document.getElementById('totalAtivo').textContent = `Total Ativo: R$ ${totalAtivo.toFixed(2)}`;
+    document.getElementById('totalPassivo').textContent = `Total Passivo: R$ ${totalPassivo.toFixed(2)}`;
+    document.getElementById('totalPL').textContent = `Total PL: R$ ${(totalAtivo - totalPassivo).toFixed(2)}`;
+    document.getElementById('saldo').textContent = `Saldo (Ativo - Passivo): R$ ${(totalAtivo - totalPassivo).toFixed(2)}`;
 }
 
-// =====================
-// Gráficos
-// =====================
 let graficoPizza, graficoBarras, graficoImportancia;
 
-function desenharGraficos() {
-    const ctxPizza = document.getElementById('graficoPizza');
-    const ctxBarras = document.getElementById('graficoBarras');
-    const ctxImportancia = document.getElementById('graficoImportancia');
+function atualizarGraficos() {
+    const tipos = {};
+    const importanciaData = {};
+    const nomes = [];
+    const atual = [];
+    const ideal = [];
 
-    const tipos = ['Ativo', 'Passivo'];
-    const somaPorTipo = tipos.map(tipo =>
-        contas.filter(c => c.tipo === tipo).reduce((acc, cur) => acc + cur.valorAtual, 0)
-    );
+    contas.forEach(conta => {
+        tipos[conta.tipo] = (tipos[conta.tipo] || 0) + conta.valorAtual;
+        importanciaData[conta.nome] = conta.importancia;
+        nomes.push(conta.nome);
+        atual.push(conta.valorAtual);
+        ideal.push(conta.valorIdeal);
+    });
 
-    const labels = contas.map(c => c.nome);
-    const atual = contas.map(c => c.valorAtual);
-    const ideal = contas.map(c => c.valorIdeal);
-    const importancia = contas.map(c => c.importancia || 0);
+    const cores = ['#2E86C1', '#28B463', '#F39C12', '#E74C3C', '#8E44AD', '#17A589'];
 
-    if (ctxPizza) {
-        if (graficoPizza) graficoPizza.destroy();
-        graficoPizza = new Chart(ctxPizza, {
-            type: 'pie',
-            data: {
-                labels: tipos,
-                datasets: [{
-                    label: 'Distribuição por Tipo',
-                    data: somaPorTipo,
-                    backgroundColor: ['#36A2EB', '#FF6384']
-                }]
+    // Gráfico Pizza
+    if (graficoPizza) graficoPizza.destroy();
+    graficoPizza = new Chart(document.getElementById('graficoPizza'), {
+        type: 'pie',
+        data: {
+            labels: Object.keys(tipos),
+            datasets: [{
+                data: Object.values(tipos),
+                backgroundColor: cores
+            }]
+        },
+        options: {
+            plugins: {
+                legend: { position: 'bottom' }
             }
-        });
-    }
+        }
+    });
 
-    if (ctxBarras) {
-        if (graficoBarras) graficoBarras.destroy();
-        graficoBarras = new Chart(ctxBarras, {
-            type: 'bar',
-            data: {
-                labels,
-                datasets: [
-                    {
-                        label: 'Atual',
-                        data: atual,
-                        backgroundColor: '#36A2EB'
-                    },
-                    {
-                        label: 'Ideal',
-                        data: ideal,
-                        backgroundColor: '#FFCE56'
-                    }
-                ]
+    // Gráfico Barras (Atual x Ideal)
+    if (graficoBarras) graficoBarras.destroy();
+    graficoBarras = new Chart(document.getElementById('graficoBarras'), {
+        type: 'bar',
+        data: {
+            labels: nomes,
+            datasets: [
+                {
+                    label: 'Atual (R$)',
+                    data: atual,
+                    backgroundColor: '#2E86C1'
+                },
+                {
+                    label: 'Ideal (R$)',
+                    data: ideal,
+                    backgroundColor: '#28B463'
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { position: 'top' }
             },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: {
-                        position: 'top'
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Gráfico de Importância
+    if (graficoImportancia) graficoImportancia.destroy();
+    graficoImportancia = new Chart(document.getElementById('graficoImportancia'), {
+        type: 'bar',
+        data: {
+            labels: nomes,
+            datasets: [{
+                label: 'Nota de Importância',
+                data: contas.map(c => c.importancia),
+                backgroundColor: '#F39C12'
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        stepSize: 1
                     }
                 }
             }
-        });
-    }
-
-    if (ctxImportancia) {
-        if (graficoImportancia) graficoImportancia.destroy();
-        graficoImportancia = new Chart(ctxImportancia, {
-            type: 'bar',
-            data: {
-                labels,
-                datasets: [{
-                    label: 'Importância',
-                    data: importancia,
-                    backgroundColor: '#FF6384'
-                }]
-            }
-        });
-    }
+        }
+    });
 }
 
-// =====================
-// Inicialização
-// =====================
-document.addEventListener('DOMContentLoaded', () => {
-    desenharTabela();
-    desenharGraficos();
-});
+// Inicializar na abertura da página
+atualizarTabela();
+atualizarGraficos();
