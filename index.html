@@ -1,26 +1,81 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Finance App</title>
-  <link rel="stylesheet" href="style.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="app.js" defer></script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Balanço Patrimonial</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <header>
-    <h1>Finance App</h1>
-    <nav>
-      <a href="balanco.html">Balanço</a>
-      <a href="dre.html">DRE</a>
-      <a href="liquidez.html">Liquidez</a>
-      <a href="estrutura.html">Estrutura</a>
-    </nav>
-  </header>
-  <main>
-    <h2>Bem-vindo ao seu App de Análise Financeira</h2>
-    <p>Escolha uma das opções no menu acima para começar.</p>
-  </main>
+
+    <header>
+        <h1>Balanço Patrimonial</h1>
+        <nav>
+            <a href="index.html">Início</a>
+            <a href="dre.html">DRE</a>
+            <a href="liquidez.html">Liquidez</a>
+            <a href="estrutura.html">Estrutura</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="adicionar-conta">
+            <h2>Adicionar Conta</h2>
+            <input type="text" id="nomeConta" placeholder="Nome da Conta">
+            <select id="tipoConta">
+                <option value="Ativo">Ativo</option>
+                <option value="Passivo">Passivo</option>
+            </select>
+            <input type="text" id="subgrupoConta" placeholder="Subgrupo">
+            <input type="number" id="valorAtualConta" placeholder="Valor Atual (R$)">
+            <input type="number" id="valorIdealConta" placeholder="Valor Ideal (R$)">
+            <input type="number" id="importanciaConta" placeholder="Nota de Importância (1 a 5)">
+            <button type="button" onclick="adicionarConta()">Adicionar Conta</button>
+        </section>
+
+        <section class="resumo">
+            <h2>Resumo do Balanço</h2>
+            <table id="tabelaContas">
+                <thead>
+                    <tr>
+                        <th>Conta</th>
+                        <th>Tipo</th>
+                        <th>Subgrupo</th>
+                        <th>Atual (R$)</th>
+                        <th>Ideal (R$)</th>
+                        <th>Diferença</th>
+                        <th>%</th>
+                        <th>Importância</th>
+                        <th>Recomendação</th>
+                        <th>Ação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Conteúdo dinâmico -->
+                </tbody>
+            </table>
+
+            <div class="totais">
+                <p id="totalAtivo">Total Ativo: R$ 0,00</p>
+                <p id="totalPassivo">Total Passivo: R$ 0,00</p>
+                <p id="totalPL">Total PL: R$ 0,00</p>
+                <p id="saldo">Saldo (Ativo - Passivo): R$ 0,00</p>
+            </div>
+        </section>
+
+        <section class="graficos">
+            <h3>Gráfico de Distribuição por Tipo</h3>
+            <canvas id="graficoPizza"></canvas>
+
+            <h3>Gráfico Atual x Ideal</h3>
+            <canvas id="graficoBarras"></canvas>
+
+            <h3>Gráfico de Importância</h3>
+            <canvas id="graficoImportancia"></canvas>
+        </section>
+    </main>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="app.js"></script>
 </body>
 </html>
